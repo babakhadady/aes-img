@@ -1,0 +1,17 @@
+#ifndef AES_H
+#define AES_H
+
+#include <vector>
+
+class AES {
+
+private:
+	
+public:
+  AES();
+	
+  std::vector<int> AesEncrypt(std::vector<int> data, std::vector<int> key);
+  std::vector<int> AesDecrypt(std::vector<int> data, std::vector<int> key);
+};
+
+#endif
