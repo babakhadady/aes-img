@@ -10,20 +10,19 @@ jobs:
   build:
     name: build project
     runs-on: ubuntu-latest
-    outputs:
-      RUNNER: ${{ runner.name }}
     steps:
     - uses: actions/checkout@v3
     - name: make all
       run: make
     - name: run src
       run: ./src/aes
-    - run: echo "selected runner = ${{ runner.name }}"
-      
+       
   test:
     name: run unit tests
-    needs: build
-    runs-on: ${{needs.build.outputs.RUNNER}}
+    runs-on: ubuntu-latest
     steps:
-      - name: run tests
-        run: ./tests/tests
+    - uses: actions/checkout@v3
+    - name: make all
+      run: make
+    - name: run unit tests
+      run: ./tests/tests
