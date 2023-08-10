@@ -33,28 +33,31 @@ void AES::SubBytes(vector<vector<uint8_t>> &data)
 void AES::ShiftRows(vector<vector<uint8_t>> &data)
 {
   for (int i = 0; i < data.size(); i++) {
-		ShiftRow(data[i], i);
+    ShiftRow(data[i], i);
   }
 }
-
 
 /** TODO: OPTIMIZE IMPLEMENTATION**/
 void AES::ShiftRow(vector<uint8_t> &data, int shift)
 {
   while (shift > 0) {
     uint8_t prev = data[0];
-    for (int i =  data.size() - 1; i >= 0; i--) {
+    for (int i = data.size() - 1; i >= 0; i--) {
       uint8_t temp = data[i];
       data[i] = prev;
       prev = temp;
     }
-	shift--;
+    shift--;
   }
 }
 
 void AES::Test()
 {
-  vector<vector<uint8_t>> test{{1, 2, 3, 4}, {5, 6, 7, 8}, {9, 10, 11, 12}, {13,14,15,16}, {17,18,19,20}};
+  vector<vector<uint8_t>> test{{1, 2, 3, 4},
+                               {5, 6, 7, 8},
+                               {9, 10, 11, 12},
+                               {13, 14, 15, 16},
+                               {17, 18, 19, 20}};
   ShiftRows(test);
 
   for (int i = 0; i < test.size(); i++) {

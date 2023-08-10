@@ -6,8 +6,8 @@ OBJS := ../src/aes.o ../src/sbox.o
 
 
 tests: $(TESTS)  
-	${CXX} ${CXXFLAGS} -I./../src ${OBJS}  -o $@ $^
+	${CXX} ${CXXFLAGS} -I../src/ ${OBJS}  -o $@ $^
 
 
 clean:
-	$(RM) *. test 
+	$(RM) *. tests 
