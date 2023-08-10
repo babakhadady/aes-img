@@ -1,11 +1,13 @@
 #include "sbox.hpp"
+#include "util/gf-util.hpp"
 #include <cstdio>
 
 SBox::SBox() { GenerateLogTables(); }
 
 void SBox::ForwardSBox(uint8_t *pval)
 {
-  uint8_t val = *pval != 0 ? *pval != 1 ? antilog_arr[255 - log_arr[*pval]] : 1 : 0;
+  uint8_t val =
+      *pval != 0 ? *pval != 1 ? antilog_arr[255 - log_arr[*pval]] : 1 : 0;
   *pval = val ^ LeftRotate(val, 1) ^ LeftRotate(val, 2) ^ LeftRotate(val, 3) ^
           LeftRotate(val, 4) ^ (uint8_t)99;
 }
@@ -28,7 +30,7 @@ void SBox::VisualizeSBox()
   printf("\n\n\n======================== VISUALIZING SBOX "
          "========================\n\n");
   printf("    ");
-	
+
   for (int i = 0; i < 16; i++) {
     printf("%01x   ", i);
   }
@@ -54,23 +56,4 @@ uint8_t SBox::LeftRotate(uint8_t val, uint8_t shift)
 uint8_t SBox::RightRotate(uint8_t val, uint8_t shift)
 {
   return (val >> shift) | (val << (8 - shift));
-}
-
-uint8_t SBox::GFMul(uint8_t a, uint8_t b)
-{
-  uint8_t p = 0;
-  uint8_t c;
-
-  for (int i = 0; i < 8; i++) {
-    c = a & 0x80;
-    if (b & 1) {
-      p ^= a;
-    }
-    a = a << 1;
-    if (c) {
-      a ^= 0x1b;
-    }
-    b = b >> 1;
-  }
-  return p;
 }

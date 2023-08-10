@@ -10,11 +10,11 @@ using std::vector;
 class AES {
 
 private:
-  /* const uint8_t mix_columns_matrix[] = */
-  /* [ [ 2, 3, 1, 1 ], [ 1, 2, 3, 1 ], [ 1, 1, 2, 3 ], [ 3, 1, 1, 2 ] ]; */
+  static const uint8_t mix_columns_matrix[4][4];
   SBox *sbox;
   void AddRoundKey(vector<vector<uint8_t>> &data, vector<vector<uint8_t>> &key);
   void ShiftRow(vector<uint8_t> &data, int shift);
+	vector<uint8_t> MixColumn(vector<uint8_t> column);
 
 public:
   AES();

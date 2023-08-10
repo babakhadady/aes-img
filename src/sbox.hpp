@@ -10,7 +10,6 @@ private:
 
   uint8_t LeftRotate(uint8_t val, uint8_t shift);
   uint8_t RightRotate(uint8_t val, uint8_t shift);
-  uint8_t GFMul(uint8_t a, uint8_t b);
   void GenerateLogTables();
 
 public:
