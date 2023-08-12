@@ -14,8 +14,9 @@ private:
   SBox *sbox;
 
   vector<vector<uint8_t>> InitialRoundKey(vector<uint8_t> key);
-  void NextRoundKey(vector<vector<uint8_t>> key, int round);
-	vector<uint8_t> GenerateNextWord(vector<uint8_t> word);
+  vector<vector<uint8_t>> NextRoundKey(vector<vector<uint8_t>> key, int round);
+	vector<uint8_t> GenerateFirstWord(vector<uint8_t> word, int round);
+	vector<uint8_t> GenerateNextWord(vector<uint8_t> w1, vector<uint8_t> w2);
   uint8_t RoundConstant(int i);
 
   void ShiftRow(vector<uint8_t> &data, int shift);

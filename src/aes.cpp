@@ -107,9 +107,7 @@ vector<uint8_t> AES::MixColumn(vector<uint8_t> column)
   return mixed_columns;
 }
 
-/* Generates initial 16 byte key
- * TODO: Support for 192 and 256 bit keys
- * */
+/* TODO: Support for 192 and 256 bit keys */
 vector<vector<uint8_t>> AES::InitialRoundKey(vector<uint8_t> key)
 {
 
@@ -122,15 +120,33 @@ vector<vector<uint8_t>> AES::InitialRoundKey(vector<uint8_t> key)
   return initial_key;
 }
 
-void AES::NextRoundKey(vector<vector<uint8_t>> key, int round)
+vector<vector<uint8_t>> AES::NextRoundKey(vector<vector<uint8_t>> key,
+                                          int round)
 {
-  vector<uint8_t> rc = {RoundConstant(round), 0, 0, 0};
 
-  key.push_back(GenerateNextWord(key[0]));
+  vector<vector<uint8_t>> next_key{GenerateFirstWord(key[0], round)};
+
+  for (int i = 1; i < 2; i++) {
+    next_key.push_back(GenerateNextWord(key[i], next_key[i - 1]));
+  }
+
+  return next_key;
 }
 
-vector<uint8_t> AES::GenerateNextWord(vector<uint8_t> word)
+vector<uint8_t> AES::GenerateNextWord(vector<uint8_t> w1, vector<uint8_t> w2)
 {
+  vector<uint8_t> next_word;
+  for (int i = 0; i < w1.size(); i++) {
+    next_word.push_back(w1[i] ^ w2[i]);
+  }
+  return next_word;
+}
+
+vector<uint8_t> AES::GenerateFirstWord(vector<uint8_t> word, int round)
+{
+
+  vector<uint8_t> rc = {RoundConstant(round), 0x00, 0x00, 0x00};
+
   uint32_t shift =
       LeftRotate((uint32_t)((uint32_t)word[0] << 24 | (uint32_t)word[1] << 16 |
                             (uint32_t)word[2] << 8 | (uint32_t)word[3]),
@@ -143,16 +159,14 @@ vector<uint8_t> AES::GenerateNextWord(vector<uint8_t> word)
       (uint8_t)(shift & 0xFF),
   };
 
-  for (auto i : next_word) {
-    printf("%x ", i);
-  }
-  printf("\n");
-
   vector<vector<uint8_t>> temp = {next_word};
   SubBytes(temp);
-	
-	sbox->VisualizeSBox();
-	next_word = temp[0];
+
+  next_word = temp[0];
+
+  for (int i = 0; i < 4; i++) {
+    next_word[i] = next_word[i] ^ rc[i];
+  }
 
   return next_word;
 }
@@ -185,7 +199,7 @@ void AES::Test()
   /*   printf("\n"); */
   /* } */
 
-  for (auto i : GenerateNextWord({0xF0, 0x88, 0x80, 0x00})) {
+  for (auto i : GenerateFirstWord({0xF0, 0x88, 0x80, 0x00}, 1)) {
 
     printf("%x ", i);
   }
