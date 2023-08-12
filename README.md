@@ -1,2 +1,2 @@
 # AES Image Encryption
-## Image Encryption Through AES with Chaos Key
+Image encryption utilizing AES and chaos system key generation
