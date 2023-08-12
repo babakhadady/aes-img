@@ -8,8 +8,6 @@ private:
   uint8_t log_arr[255];
   uint8_t antilog_arr[255];
 
-  uint8_t LeftRotate(uint8_t val, uint8_t shift);
-  uint8_t RightRotate(uint8_t val, uint8_t shift);
   void GenerateLogTables();
 
 public:

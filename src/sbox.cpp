@@ -48,12 +48,3 @@ void SBox::VisualizeSBox()
   }
 }
 
-uint8_t SBox::LeftRotate(uint8_t val, uint8_t shift)
-{
-  return (val << shift) | (val >> (8 - shift));
-}
-
-uint8_t SBox::RightRotate(uint8_t val, uint8_t shift)
-{
-  return (val >> shift) | (val << (8 - shift));
-}
