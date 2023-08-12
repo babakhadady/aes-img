@@ -122,7 +122,42 @@ vector<vector<uint8_t>> AES::InitialRoundKey(vector<uint8_t> key)
   return initial_key;
 }
 
-int AES::RoundConstant(int i)
+void AES::NextRoundKey(vector<vector<uint8_t>> key, int round)
+{
+  vector<uint8_t> rc = {RoundConstant(round), 0, 0, 0};
+
+  key.push_back(GenerateNextWord(key[0]));
+}
+
+vector<uint8_t> AES::GenerateNextWord(vector<uint8_t> word)
+{
+  uint32_t shift =
+      LeftRotate((uint32_t)((uint32_t)word[0] << 24 | (uint32_t)word[1] << 16 |
+                            (uint32_t)word[2] << 8 | (uint32_t)word[3]),
+                 1);
+
+  vector<uint8_t> next_word = {
+      (uint8_t)(shift >> 24),
+      (uint8_t)(shift >> 16),
+      (uint8_t)(shift >> 8),
+      (uint8_t)(shift & 0xFF),
+  };
+
+  for (auto i : next_word) {
+    printf("%x ", i);
+  }
+  printf("\n");
+
+  vector<vector<uint8_t>> temp = {next_word};
+  SubBytes(temp);
+	
+	sbox->VisualizeSBox();
+	next_word = temp[0];
+
+  return next_word;
+}
+
+uint8_t AES::RoundConstant(int i)
 {
   if (i < 1) {
     throw std::invalid_argument("RoundConstant: i must be >= 1");
@@ -135,24 +170,23 @@ int AES::RoundConstant(int i)
   return GFMul(RoundConstant(i - 1), 2);
 }
 
-void AES::NextRoundKey(vector<vector<uint8_t>> key)
-{
-  // STUB
-}
-
 void AES::Test()
 {
-  /* vector<uint8_t> key{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16};
-   */
+  /* vector<vector<uint8_t>> key{ */
+  /*     {1, 2, 3, 4}, {5, 6, 7, 8}, {9, 10, 11, 12}, {13, 14, 15, 16}}; */
 
-  /* for (auto i : InitialRoundKey(key)) { */
+  /* vector<vector<uint8_t>> data = { */
+  /*     {1, 2, 3, 4}, {5, 6, 7, 8}, {9, 10, 11, 12}, {13, 14, 15, 16}}; */
+  /* AddRoundKey(data, key); */
+
+  /* for (auto i : data) { */
   /*   for (auto j : i) */
-  /*     printf("%d", j); */
+  /*     printf("%d ", j); */
   /*   printf("\n"); */
   /* } */
 
-  for (int i = 1; i <= 10; i++) {
-    printf("%d: ", i);
-    printf("%x\n", RoundConstant(i));
+  for (auto i : GenerateNextWord({0xF0, 0x88, 0x80, 0x00})) {
+
+    printf("%x ", i);
   }
 }

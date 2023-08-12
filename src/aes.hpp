@@ -15,7 +15,8 @@ private:
 
   vector<vector<uint8_t>> InitialRoundKey(vector<uint8_t> key);
   void NextRoundKey(vector<vector<uint8_t>> key, int round);
-  int RoundConstant(int i);
+	vector<uint8_t> GenerateNextWord(vector<uint8_t> word);
+  uint8_t RoundConstant(int i);
 
   void ShiftRow(vector<uint8_t> &data, int shift);
   vector<uint8_t> MixColumn(vector<uint8_t> column);

@@ -29,3 +29,13 @@ uint8_t RightRotate(uint8_t val, uint8_t shift)
 {
   return (val >> shift) | (val << (8 - shift));
 }
+
+uint32_t LeftRotate(uint32_t val, uint8_t shift)
+{
+  return (val << shift) | (val >> (32 - shift));
+}
+
+uint32_t RightRotate(int32_t val, uint8_t shift)
+{
+  return (val >> shift) | (val << (32 - shift));
+}

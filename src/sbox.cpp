@@ -46,5 +46,5 @@ void SBox::VisualizeSBox()
     }
     printf("\n");
   }
+  printf("\n\n\n");
 }
-
