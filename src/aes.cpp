@@ -124,9 +124,9 @@ vector<vector<uint8_t>> AES::NextRoundKey(vector<vector<uint8_t>> key,
                                           int round)
 {
 
-  vector<vector<uint8_t>> next_key{GenerateFirstWord(key[0], round)};
+  vector<vector<uint8_t>> next_key{GenerateFirstWord(key[3], key[0], round)};
 
-  for (int i = 1; i < 2; i++) {
+  for (int i = 1; i < 4; i++) {
     next_key.push_back(GenerateNextWord(key[i], next_key[i - 1]));
   }
 
@@ -142,15 +142,16 @@ vector<uint8_t> AES::GenerateNextWord(vector<uint8_t> w1, vector<uint8_t> w2)
   return next_word;
 }
 
-vector<uint8_t> AES::GenerateFirstWord(vector<uint8_t> word, int round)
+vector<uint8_t> AES::GenerateFirstWord(vector<uint8_t> w1, vector<uint8_t> w2,
+                                       int round)
 {
 
   vector<uint8_t> rc = {RoundConstant(round), 0x00, 0x00, 0x00};
 
   uint32_t shift =
-      LeftRotate((uint32_t)((uint32_t)word[0] << 24 | (uint32_t)word[1] << 16 |
-                            (uint32_t)word[2] << 8 | (uint32_t)word[3]),
-                 1);
+      LeftRotate((uint32_t)((uint32_t)w1[0] << 24 | (uint32_t)w1[1] << 16 |
+                            (uint32_t)w1[2] << 8 | (uint32_t)w1[3]),
+                 8);
 
   vector<uint8_t> next_word = {
       (uint8_t)(shift >> 24),
@@ -166,6 +167,10 @@ vector<uint8_t> AES::GenerateFirstWord(vector<uint8_t> word, int round)
 
   for (int i = 0; i < 4; i++) {
     next_word[i] = next_word[i] ^ rc[i];
+  }
+
+  for (int i = 0; i < 4; i++) {
+    next_word[i] = next_word[i] ^ w2[i];
   }
 
   return next_word;
@@ -199,8 +204,19 @@ void AES::Test()
   /*   printf("\n"); */
   /* } */
 
-  for (auto i : GenerateFirstWord({0xF0, 0x88, 0x80, 0x00}, 1)) {
+  vector<vector<uint8_t>> prevKey = {{0x49, 0x20, 0xe2, 0x99},
+                                     {0xa5, 0x20, 0x52, 0x61},
+                                     {0x64, 0x69, 0x6f, 0x47},
+                                     {0x61, 0x74, 0x75, 0x6e}};
 
-    printf("%x ", i);
+  for (int i = 0; i < 11; i++) {
+
+    for (auto i : prevKey) {
+      for (auto j : i) {
+        printf("%02x ", j);
+      }
+    }
+    printf(" \n");
+    prevKey = NextRoundKey(prevKey, i + 1);
   }
 }
