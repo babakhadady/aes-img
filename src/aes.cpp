@@ -8,6 +8,8 @@
 #include <sys/types.h>
 #include <vector>
 
+#define VERBOSE 1
+
 uint8_t log_arr[255];
 uint8_t antilog_arr[255];
 
@@ -19,14 +21,31 @@ const uint8_t AES::mix_columns_matrix[4][4]{
 vector<vector<uint8_t>> AES::AesEncrypt(vector<vector<uint8_t>> data,
                                         vector<uint8_t> key)
 {
-  /* InitialRoundKey(key); */
+  vector<vector<uint8_t>> curr_key = InitialRoundKey(key);
 
-  /* InitialRound(data, key); */
+  if (VERBOSE) {
+    PrintData(data, "=== INITIAL DATA ===");
+  }
 
-  /* MainRound(data, key); */
+  InitialRound(data, curr_key);
+  int i;
+  for (i = 1; i < 10; i++) {
 
-  /* FinalRound(data, key); */
-  return vector<vector<uint8_t>>{}; // STUB
+    if (VERBOSE) {
+      PrintData(data, "\n\n\n=== ROUND " + std::to_string(i) + " ===");
+    }
+
+    curr_key = NextRoundKey(curr_key, i);
+    CoreRound(data, curr_key);
+  }
+
+  if (VERBOSE) {
+    PrintData(data, "\n\n\n=== ROUND " + std::to_string(i) + " ===");
+  }
+
+  curr_key = NextRoundKey(curr_key, 10);
+  FinalRound(data, curr_key);
+  return data;
 }
 
 vector<vector<uint8_t>> AES::AesDecrypt(vector<vector<uint8_t>> data,
@@ -35,12 +54,60 @@ vector<vector<uint8_t>> AES::AesDecrypt(vector<vector<uint8_t>> data,
   return vector<vector<uint8_t>>{}; // STUB
 }
 
+void AES::InitialRound(vector<vector<uint8_t>> &data,
+                       vector<vector<uint8_t>> key)
+{
+  AddRoundKey(data, key);
+}
+
+void AES::CoreRound(vector<vector<uint8_t>> &data, vector<vector<uint8_t>> key)
+{
+
+  SubBytes(data);
+  if (VERBOSE) {
+    PrintData(data, "\n- AFTER SUBBYTES -");
+  }
+
+  ShiftRows(data);
+  if (VERBOSE) {
+    PrintData(data, "\n- AFTER SHIFTROWS -");
+  }
+
+  MixColumns(data);
+  if (VERBOSE) {
+    PrintData(data, "\n- AFTER MIXCOLUMNS -");
+  }
+
+  AddRoundKey(data, key);
+  if (VERBOSE) {
+    PrintData(data, "\n- AFTER ADDROUNDKEY -");
+  }
+}
+
+void AES::FinalRound(vector<vector<uint8_t>> &data, vector<vector<uint8_t>> key)
+{
+  SubBytes(data);
+  if (VERBOSE) {
+    PrintData(data, "\n- AFTER SUBBYTES -");
+  }
+
+  ShiftRows(data);
+  if (VERBOSE) {
+    PrintData(data, "\n- AFTER SHIFTROWS -");
+  }
+
+  AddRoundKey(data, key);
+  if (VERBOSE) {
+    PrintData(data, "\n- AFTER ADDROUNDKEY -");
+  }
+}
+
 void AES::AddRoundKey(vector<vector<uint8_t>> &data,
                       vector<vector<uint8_t>> key)
 {
   for (int i = 0; i < data.size(); i++) {
     for (int j = 0; j < data[i].size(); j++) {
-      data[i][j] = data[i][j] ^ key[i][j];
+      data[i][j] ^= key[i][j];
     }
   }
 }
@@ -124,13 +191,27 @@ vector<vector<uint8_t>> AES::NextRoundKey(vector<vector<uint8_t>> key,
                                           int round)
 {
 
-  vector<vector<uint8_t>> next_key{GenerateFirstWord(key[3], key[0], round)};
+  vector<vector<uint8_t>> next_key{
+      GenerateFirstWord({key[0][3], key[1][3], key[2][3], key[3][3]},
+                        {key[0][0], key[1][0], key[2][0], key[3][0]}, round)};
 
   for (int i = 1; i < 4; i++) {
-    next_key.push_back(GenerateNextWord(key[i], next_key[i - 1]));
+    next_key.push_back(GenerateNextWord(
+        {key[0][i], key[1][i], key[2][i], key[3][i]}, next_key[i - 1]));
   }
 
-  return next_key;
+  /* PrintData(next_key, "key\n"); */
+
+  vector<vector<uint8_t>> next_key_rotated;
+
+  for (int i = 0; i < next_key.size(); i++) {
+    next_key_rotated.push_back(
+        {next_key[0][i], next_key[1][i], next_key[2][i], next_key[3][i]});
+  }
+
+  PrintData(next_key_rotated, "\n~ KEY ~ ");
+
+  return next_key_rotated;
 }
 
 vector<uint8_t> AES::GenerateNextWord(vector<uint8_t> w1, vector<uint8_t> w2)
@@ -189,34 +270,48 @@ uint8_t AES::RoundConstant(int i)
   return GFMul(RoundConstant(i - 1), 2);
 }
 
+void AES::PrintData(vector<vector<uint8_t>> data, std::string title)
+{
+  std::cout << title << std::endl;
+
+  for (int i = 0; i < data.size(); i++) {
+    for (int j = 0; j < data.size(); j++) {
+      printf("%x", data[i][j]);
+    }
+    printf(" ");
+  }
+  printf("\n");
+}
+
 void AES::Test()
 {
-  /* vector<vector<uint8_t>> key{ */
-  /*     {1, 2, 3, 4}, {5, 6, 7, 8}, {9, 10, 11, 12}, {13, 14, 15, 16}}; */
+  vector<uint8_t> prevKey = {0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
 
-  /* vector<vector<uint8_t>> data = { */
-  /*     {1, 2, 3, 4}, {5, 6, 7, 8}, {9, 10, 11, 12}, {13, 14, 15, 16}}; */
-  /* AddRoundKey(data, key); */
+                             0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff};
 
-  /* for (auto i : data) { */
-  /*   for (auto j : i) */
-  /*     printf("%d ", j); */
-  /*   printf("\n"); */
-  /* } */
+  /* vector<uint8_t> prevKey = {0x54, 0x68, 0x61, 0x74, 0x73, 0x20, 0x6d,
+   * 0x79,
+   */
+  /*                            0x20, 0x4b, 0x75, 0x6e, 0x67, 0x20, 0x46,
+   * 0x75};
+   */
 
-  vector<vector<uint8_t>> prevKey = {{0x49, 0x20, 0xe2, 0x99},
-                                     {0xa5, 0x20, 0x52, 0x61},
-                                     {0x64, 0x69, 0x6f, 0x47},
-                                     {0x61, 0x74, 0x75, 0x6e}};
+  /* vector<vector<uint8_t>> data = {{0x01, 0x4B, 0xAF, 0x22}, */
+  /*                                 {0x78, 0xA6, 0x9D, 0x33}, */
+  /*                                 {0x1D, 0x51, 0x80, 0x10}, */
+  /*                                 {0x36, 0x43, 0xE9, 0x9A}}; */
 
-  for (int i = 0; i < 11; i++) {
+  vector<vector<uint8_t>> data = {{0xaa, 0xbb, 0xcc, 0xdd},
+                                  {0xff, 0xff, 0xff, 0xff},
+                                  {0xff, 0xff, 0xff, 0xff},
+                                  {0xff, 0xff, 0xff, 0xff}};
 
-    for (auto i : prevKey) {
-      for (auto j : i) {
-        printf("%02x ", j);
-      }
-    }
-    printf(" \n");
-    prevKey = NextRoundKey(prevKey, i + 1);
-  }
+  /* vector<vector<uint8_t>> data = {{0x54, 0x77, 0x6f, 0x20}, */
+  /*                                 {0x4f, 0x6e, 0x65, 0x20}, */
+  /*                                 {0x43, 0x69, 0x6e, 0x25}, */
+  /*                                 {0x20, 0x54, 0x77, 0x6f}}; */
+
+  data = AesEncrypt(data, prevKey);
+
+  PrintData(data, "\n\nFINAL DATA");
 }
