@@ -5,10 +5,11 @@
 #include <cstdio>
 #include <iostream>
 #include <stdexcept>
+#include <string>
 #include <sys/types.h>
 #include <vector>
 
-#define VERBOSE 1
+#define VERBOSE 0
 
 uint8_t log_arr[255];
 uint8_t antilog_arr[255];
@@ -18,7 +19,7 @@ AES::AES() { sbox = new SBox(); }
 const uint8_t AES::mix_columns_matrix[4][4]{
     {2, 3, 1, 1}, {1, 2, 3, 1}, {1, 1, 2, 3}, {3, 1, 1, 2}};
 
-vector<vector<uint8_t>> AES::AesEncrypt(vector<vector<uint8_t>> data,
+vector<vector<uint8_t>> AES::AesEncrypt(vector<vector<uint8_t>> &data,
                                         vector<uint8_t> key)
 {
   vector<vector<uint8_t>> curr_key = InitialRoundKey(key);
@@ -48,7 +49,7 @@ vector<vector<uint8_t>> AES::AesEncrypt(vector<vector<uint8_t>> data,
   return data;
 }
 
-vector<vector<uint8_t>> AES::AesDecrypt(vector<vector<uint8_t>> data,
+vector<vector<uint8_t>> AES::AesDecrypt(vector<vector<uint8_t>> &data,
                                         vector<vector<uint8_t>> key)
 {
   return vector<vector<uint8_t>>{}; // STUB
@@ -209,7 +210,9 @@ vector<vector<uint8_t>> AES::NextRoundKey(vector<vector<uint8_t>> key,
         {next_key[0][i], next_key[1][i], next_key[2][i], next_key[3][i]});
   }
 
-  PrintData(next_key_rotated, "\n~ KEY ~ ");
+  if (VERBOSE) {
+    PrintData(next_key_rotated, "\n~ KEY ~ ");
+  }
 
   return next_key_rotated;
 }
@@ -287,13 +290,12 @@ void AES::Test()
 {
   vector<uint8_t> prevKey = {0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
 
-                             0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff};
+                             0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0x31};
 
-  /* vector<uint8_t> prevKey = {0x54, 0x68, 0x61, 0x74, 0x73, 0x20, 0x6d,
-   * 0x79,
+  /* vector<uint8_t> prevKey = {0x54, 0x68, 0x61, 0x74, 0x73, 0x20, 0x6d, 0x79,
    */
-  /*                            0x20, 0x4b, 0x75, 0x6e, 0x67, 0x20, 0x46,
-   * 0x75};
+
+  /*                            0x20, 0x4b, 0x75, 0x6e, 0x67, 0x20, 0x46, 0x75};
    */
 
   /* vector<vector<uint8_t>> data = {{0x01, 0x4B, 0xAF, 0x22}, */

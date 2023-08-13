@@ -26,19 +26,19 @@ private:
   void InitialRound(vector<vector<uint8_t>> &data, vector<vector<uint8_t>> key);
   void CoreRound(vector<vector<uint8_t>> &data, vector<vector<uint8_t>> key);
   void FinalRound(vector<vector<uint8_t>> &data, vector<vector<uint8_t>> key);
-  void PrintData(vector<vector<uint8_t>> data, std::string title);
 
 public:
   AES();
-  vector<vector<uint8_t>> AesEncrypt(vector<vector<uint8_t>> data,
+  vector<vector<uint8_t>> AesEncrypt(vector<vector<uint8_t>> &data,
                                      vector<uint8_t> key);
-  vector<vector<uint8_t>> AesDecrypt(vector<vector<uint8_t>> data,
+  vector<vector<uint8_t>> AesDecrypt(vector<vector<uint8_t>> &data,
                                      vector<vector<uint8_t>> key);
 
   void SubBytes(vector<vector<uint8_t>> &data);
   void ShiftRows(vector<vector<uint8_t>> &data);
   void MixColumns(vector<vector<uint8_t>> &data);
   void AddRoundKey(vector<vector<uint8_t>> &data, vector<vector<uint8_t>> key);
+  void PrintData(vector<vector<uint8_t>> data, std::string title);
 
   void Test();
 };
