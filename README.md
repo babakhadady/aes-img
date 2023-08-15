@@ -15,6 +15,15 @@ Electronic Codebook (ECB) is a simple and obsolete mode of encryption. Since AES
 
 
 
+### Usage
+To utilize the encryption on a desired image, run the following from the root directory. Ensure that the specified image path leads to a proper `.png` image.
+```
+make && ./src/aes ~/path/to/img
+```
+Example:
+```
+make && ./src/aes ../img/shark.png
+```
 
 
 
