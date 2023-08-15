@@ -3,6 +3,7 @@
 
 #include "sbox.hpp"
 #include <cstdint>
+#include <string>
 #include <vector>
 
 using std::vector;
