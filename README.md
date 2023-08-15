@@ -25,6 +25,6 @@ Electronic Codebook (ECB) is a simple and obsolete mode of encryption. Since AES
 
 [2] A. Arab, M. J. Rostami, and B. Ghavami, “An image encryption method based on Chaos System and AES algorithm,” The Journal of Supercomputing, vol. 75, no. 10, pp. 6663–6682, 2019. doi:10.1007/s11227-019-02878-7 
 
-[3] “Advanced encryption standard,” Wikipedia, https://en.wikipedia.org/wiki/Advanced_Encryption_Standard# (accessed Aug. 15, 2023). 
+[3] “Advanced encryption standard,” Wikipedia, https://en.wikipedia.org/wiki/Advanced_Encryption_Standard#
 
 [4] A. Kak, “Lecture 8: AES: The Advanced Encryption Standard,” in Lecture Notes on “Computer and Network Security” 
