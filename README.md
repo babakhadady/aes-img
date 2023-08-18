@@ -6,7 +6,7 @@ This project contains an implementation of image encryption and decryption utili
 Since AES is a block cipher, encrypted images are transformed into blocks of 128 bit plaintexts, where each pixels RGBA values are converted into a single byte represented through hexadecimal. Each block is thus encrypted individually, containing exactly 4 pixels (16 bytes).
 
 #### Bit Padding
-The current implementation utilizes Bit Padding for images that once encoded as plaintexts, do not result in a multiple of 128 bits. This results in the padding method appending 0x80 followed by 0x00 until 16 bytes (128 bits) are reached. Since each pixel is represented as exactly one byte, padding is always possible as we will always have a multiple of bytes, which is always a multiple of 8 bits.
+The current implementation utilizes Bit Padding for images that once encoded as plaintexts, do not result in a multiple of 128 bits. This results in the padding method appending 0x80 followed by 0x00 until 16 bytes (128 bits) are reached. Since each pixel is represented as exactly one byte, padding is always possible as we will always have multiples of bytes, which is always a multiple of 8 bits.
 
 #### ECB vs. CBC
 
