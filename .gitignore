@@ -35,6 +35,7 @@
 
 *.dSYM
 .clang-format
+./src/aes
 **/.DS_Store
 
 
