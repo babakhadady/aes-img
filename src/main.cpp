@@ -72,7 +72,10 @@ int main(int argc, char *argv[])
     }
   }
 
-  file_name = "./out/" file_name.substr(0, file_name.find(".png")).substr(0, file_name.find("/") + a) + "_encrypted.png";
+  file_name = "../out/" +
+              file_name.substr(0, file_name.find(".png"))
+                  .substr(file_name.find_last_of("/") + 1, file_name.length() - 1) +
+              "_encrypted.png";
   cout << "Encryped File Saved to: " << file_name << endl;
   out->writeToFile(file_name);
 }
