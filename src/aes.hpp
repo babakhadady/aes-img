@@ -8,14 +8,19 @@
 
 using std::vector;
 
+#define ECB 0
+#define CBC 1
+
 class AES {
 
 private:
   static const uint8_t mix_columns_matrix[4][4];
+  vector<vector<uint8_t>> iv;
   SBox *sbox;
 
   vector<vector<uint8_t>> InitialRoundKey(vector<uint8_t> key);
   vector<vector<uint8_t>> NextRoundKey(vector<vector<uint8_t>> key, int round);
+	void GenerateInitializationVector();
   vector<uint8_t> GenerateFirstWord(vector<uint8_t> w1, vector<uint8_t> w2,
                                     int round);
   vector<uint8_t> GenerateNextWord(vector<uint8_t> w1, vector<uint8_t> w2);
@@ -39,6 +44,9 @@ public:
   void ShiftRows(vector<vector<uint8_t>> &data);
   void MixColumns(vector<vector<uint8_t>> &data);
   void AddRoundKey(vector<vector<uint8_t>> &data, vector<vector<uint8_t>> key);
+  void AddCipherText(vector<vector<uint8_t>> &data,
+                     vector<vector<uint8_t>> key);
+  void AddInitializationVector(vector<vector<uint8_t>> &data);
   void PrintData(vector<vector<uint8_t>> data, std::string title);
 
   void Test();

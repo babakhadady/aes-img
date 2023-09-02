@@ -14,7 +14,11 @@
 uint8_t log_arr[255];
 uint8_t antilog_arr[255];
 
-AES::AES() { sbox = new SBox(); }
+AES::AES()
+{
+  sbox = new SBox();
+  GenerateInitializationVector();
+}
 
 const uint8_t AES::mix_columns_matrix[4][4]{
     {2, 3, 1, 1}, {1, 2, 3, 1}, {1, 1, 2, 3}, {3, 1, 1, 2}};
@@ -30,8 +34,8 @@ vector<vector<uint8_t>> AES::AesEncrypt(vector<vector<uint8_t>> &data,
 
   InitialRound(data, curr_key);
   int i;
-  for (i = 1; i < 10; i++) {
 
+  for (i = 1; i < 10; i++) {
     if (VERBOSE) {
       PrintData(data, "\n\n\n=== ROUND " + std::to_string(i) + " ===");
     }
@@ -111,6 +115,31 @@ void AES::AddRoundKey(vector<vector<uint8_t>> &data,
       data[i][j] ^= key[i][j];
     }
   }
+}
+
+void AES::AddCipherText(vector<vector<uint8_t>> &data,
+                        vector<vector<uint8_t>> cipher)
+{
+  for (int i = 0; i < data.size(); i++) {
+    for (int j = 0; j < data[i].size(); j++) {
+      data[i][j] ^= cipher[i][j];
+    }
+  }
+}
+
+void AES::AddInitializationVector(vector<vector<uint8_t>> &data)
+{
+  for (int i = 0; i < data.size(); i++) {
+    for (int j = 0; j < data[i].size(); j++) {
+      data[i][j] ^= iv[i][j];
+    }
+  }
+}
+
+/** TODO: randomize IV **/
+void AES::GenerateInitializationVector()
+{
+  iv = {{0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}};
 }
 
 void AES::MixColumns(vector<vector<uint8_t>> &data)
@@ -292,10 +321,12 @@ void AES::Test()
 
                              0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0x31};
 
-  /* vector<uint8_t> prevKey = {0x54, 0x68, 0x61, 0x74, 0x73, 0x20, 0x6d, 0x79,
+  /* vector<uint8_t> prevKey = {0x54, 0x68, 0x61, 0x74, 0x73, 0x20, 0x6d,
+   * 0x79,
    */
 
-  /*                            0x20, 0x4b, 0x75, 0x6e, 0x67, 0x20, 0x46, 0x75};
+  /*                            0x20, 0x4b, 0x75, 0x6e, 0x67, 0x20, 0x46,
+   * 0x75};
    */
 
   /* vector<vector<uint8_t>> data = {{0x01, 0x4B, 0xAF, 0x22}, */

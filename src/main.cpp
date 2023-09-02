@@ -6,6 +6,9 @@
 
 using namespace cs221util;
 
+const vector<uint8_t> key = {0xff, 0xff, 0xff, 0xaf, 0xbf, 0xff, 0xff, 0xff,
+                             0xff, 0xff, 0xff, 0xff, 0xff, 0xcf, 0xdf, 0xff};
+
 int main(int argc, char *argv[])
 {
 
@@ -40,19 +43,19 @@ int main(int argc, char *argv[])
   AES *aes = new AES();
 
   vector<vector<uint8_t>> data_enc;
+  vector<vector<uint8_t>> prev;
 
   for (int i = 0; i < data.size(); i += 4) {
     vector<vector<uint8_t>> temp{data[i], data[i + 1], data[i + 2],
                                  data[i + 3]};
 
-    if (i != 0) {
-      /* aes->CipherBlockChain */
-    }
+    i != 0 ? aes->AddCipherText(temp, prev)
+           : aes->AddInitializationVector(temp);
 
-    aes->AesEncrypt(temp, {0xff, 0xff, 0xff, 0xaf, 0xbf, 0xff, 0xff, 0xff, 0xff,
-                           0xff, 0xff, 0xff, 0xff, 0xcf, 0xdf, 0xff});
+    aes->AesEncrypt(temp, key);
 
     data_enc.insert(data_enc.end(), temp.begin(), temp.end());
+    prev = temp;
   }
 
   PNG *out = new PNG(png->width(), png->height());
