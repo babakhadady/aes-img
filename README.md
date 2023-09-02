@@ -13,7 +13,7 @@ The current implementation utilizes Bit Padding for images that once encoded as 
 Electronic Codebook (ECB) is a simple and obsolete mode of encryption. Since AES is a block cipher, each block is encrypted individually. ECB thus lacks diffusion and is deterministic, since identical plaintext blocks will be identical as ciphertext blocks, thus data patterns are not hidden well. Initially, with the very naive implementation of ECB, we see this shortfall on images with large areas of uniform colour. Although each individual pixel becomes encrypted, a general pattern is still present and the original image is very easily discerned.
 
 
-#### Original, ECB Encryption, CBC Encryption
+#### Original Image, ECB Encrypted Image, CBC Encrypted Image
 ![ECB vs. CBC](./img/ecb_vs_cbc.png)
 
 
